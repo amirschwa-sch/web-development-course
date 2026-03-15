@@ -44,6 +44,31 @@
         }
     });
 
+    btUpdate.addEventListener("click", async function () {
+     const id = idBox.value;
+     const name = nameBox.value;
+     const age = ageBox.value;
+
+     if (!id || !name || !age) {
+        alert("Enter ID, name and age");
+     }
+
+     const student = { id, name, age };
+        
+     try {
+        await axios.put("/students", student);
+        await getALL();
+        
+        idBox.value = "";
+        nameBox.value = "";
+        ageBox.value = "";
+     } catch (error) { 
+        console.error(error);
+        alert(error.response?.data?.message || "Update failed");
+     }
+        
+    });
+
     async function getALL() {
         let response = await axios.get("/students");
         const students = response.data;
