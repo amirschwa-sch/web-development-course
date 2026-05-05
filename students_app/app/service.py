@@ -1,42 +1,26 @@
-students = [
- {"id": 1, "name": "John Doe", "age": 20},
- {"id": 2, "name": "John Smith", "age": 22},
-]
+# application logic
+import app.db as db
 
-next_id = 3
+class ServiceError(Exception):pass
 
 def add_student(student):
-    global next_id
-    student["id"] = next_id
-    next_id += 1
-    students.append(student)
-    return student
+  if not 18 <= student["age"] <= 120:
+      raise ServiceError(f'Student age is illegal: {student["age"]}')
+
+  return db.add_student(student)
 
 
 def get_students():
-    return students
+    return db.get_students()
 
 
 def get_student(student_id):
-    for student in students:
-        if student["id"] == student_id:
-            return student
-    raise KeyError(f"student not found: {student_id}")
+    return db.get_student(student_id)
 
 
 def update_student(student_update):
-    for student in students:
-        if student["id"] == student_update["id"]:
-            student.update(student_update)
-            return student
-    raise KeyError(f"student not found: {student_update['id']}")
+    return db.update_student(student_update)
+
 
 def delete_student(student_id):
-    for student in students:
-        if student["id"] == student_id:
-            students.remove(student)
-            return student
-    raise KeyError(f"student not found: {student_id}")
-
-
-
+    return db.delete_student(student_id)

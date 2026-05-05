@@ -28,7 +28,7 @@ def get_student(student_id):
     try:
         student = service.get_student(student_id)
         return jsonify(student)
-    except KeyError as e:
+    except service.ServiceNotFoundError as e:
         return jsonify({"message": str(e)}), 404
 
 
@@ -37,10 +37,10 @@ def add_student():
     student = request.get_json()
     normalize_student(student)
     try:
-      student = service.add_student(student)
-      return jsonify(student), 201
-    except service.ServiceError as e:
-        return  jsonify({"message": str(e)}), 400
+        student = service.add_student(student)
+        return jsonify(student), 201
+    except service.ServiceAppLogicError as e:
+        return jsonify({"message": str(e)}), 400
 
 
 @students_app.put("/students")
@@ -50,7 +50,9 @@ def update_student():
     try:
         student = service.update_student(student)
         return jsonify(student), 200
-    except KeyError as e:
+    except service.ServiceAppLogicError as e:
+        return jsonify({"message": str(e)}), 400
+    except service.ServiceNotFoundError as e:
         return jsonify({"message": str(e)}), 404
 
 
@@ -59,7 +61,7 @@ def delete_student(student_id):
     try:
         student = service.delete_student(student_id)
         return jsonify(student)
-    except KeyError as e:
+    except service.ServiceNotFoundError as e:
         return jsonify({"message": str(e)}), 404
 
 
